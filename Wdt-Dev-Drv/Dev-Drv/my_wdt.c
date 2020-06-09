@@ -22,21 +22,15 @@ struct omap_wdt_dev {
 	uint32_t ttgr_pattern;	
 };
 
-
-
 static void omap_wdt_enable(struct omap_wdt_dev *omap_wdev)
 {
         writel_relaxed(0xBBBB, omap_wdev->base_addr + OMAP_WDT_WSPR);
         while((readl_relaxed(omap_wdev->base_addr + OMAP_WDT_WWPS) & OMAP_W_PEND_WSPR))
                 cpu_relax();
-	pr_info("OMAP_WDT_WSPR value 1: %u\n", readl_relaxed(omap_wdev->base_addr + OMAP_WDT_WSPR));
 
         writel_relaxed(0x4444, omap_wdev->base_addr + OMAP_WDT_WSPR);
         while((readl_relaxed(omap_wdev->base_addr + OMAP_WDT_WWPS) & OMAP_W_PEND_WSPR))
                 cpu_relax();
-	pr_info("OMAP_WDT_WSPR value 2: %u\n", readl_relaxed(omap_wdev->base_addr + OMAP_WDT_WSPR));
-
-
 }
 
 static void omap_wdt_disable(struct omap_wdt_dev *omap_wdev)
@@ -60,9 +54,6 @@ static void omap_wdt_clock(struct omap_wdt_dev *omap_wdev)
 	writel_relaxed(val, omap_wdev->base_addr + OMAP_WDT_WCLR);
 	while((readl_relaxed(omap_wdev->base_addr + OMAP_WDT_WWPS) & OMAP_W_PEND_WCLR))
                 cpu_relax();
-
-	pr_info("OMAP_WDT_WCLR value: %u\n", readl_relaxed(omap_wdev->base_addr + OMAP_WDT_WCLR));
-
 }
 
 static void omap_wdt_reload(struct omap_wdt_dev *omap_wdev)
@@ -79,7 +70,6 @@ static void omap_wdt_set_counter(struct omap_wdt_dev *omap_wdev, uint32_t timeou
 	writel_relaxed(GET_WLDR_VAL(timeout), omap_wdev->base_addr + OMAP_WDT_WLDR);
 	while((readl_relaxed(omap_wdev->base_addr + OMAP_WDT_WWPS) & OMAP_W_PEND_WLDR))
                 cpu_relax();
-
 }
 
 static uint32_t omap_wdt_get_couter(struct omap_wdt_dev *omap_wdev)
@@ -89,6 +79,7 @@ static uint32_t omap_wdt_get_couter(struct omap_wdt_dev *omap_wdev)
 	val = readl_relaxed(omap_wdev->base_addr + OMAP_WDT_WCRR);
 	return val;
 }
+
 static int omap_wdt_start(struct watchdog_device *wdev)
 {
 	struct omap_wdt_dev *omap_wdev = watchdog_get_drvdata(wdev);
