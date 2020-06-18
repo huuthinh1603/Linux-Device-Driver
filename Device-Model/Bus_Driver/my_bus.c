@@ -8,6 +8,7 @@
 #include <linux/mod_devicetable.h>
 
 #include "my_bus.h"
+#include "dev_drv.h"
 
 #define AUTHOR	"Huu Thinh <huuthinh1603@gmail.com>"
 #define DESC	"This module is a simple bus driver"
@@ -168,10 +169,46 @@ struct attribute *my_dev_attrs[] = {
 };
 ATTRIBUTE_GROUPS(my_dev);
 
+ssize_t new_device_store(struct bus_type *bus, const char *buf, size_t count)
+{
+	struct my_device *mdev; 
+	unsigned char name[32];
+	uint32_t id;
+	int retval;
+
+	mdev = kzalloc(sizeof(*mdev), GFP_KERNEL);
+	if(!mdev)
+		return -ENOMEM;
+
+	retval = sscanf(buf, "%s %d", name, &id);
+	if(retval != 2) {
+		kfree(mdev);
+		return -EINVAL;
+	}
+
+	strncpy(mdev->name, name, sizeof(mdev->name));
+	
+	retval = my_device_register(mdev, id);
+	if(retval) {
+		kfree(mdev);
+		return retval;
+	}
+
+	return count;
+}
+BUS_ATTR(new_device, 0664, NULL, new_device_store);
+
+static struct attribute *new_device_attrs[] = {
+	&bus_attr_new_device.attr,
+	NULL
+};
+ATTRIBUTE_GROUPS(new_device);
+
 struct bus_type my_bus_type = {
 	.name		= "my_bus",
 	.dev_name	= "my_dev-",
 	.dev_groups	= my_dev_groups,
+	.bus_groups	= new_device_groups,
 	.match		= my_bus_match,
 	.probe		= my_bus_probe,
 	.remove		= my_bus_remove,
