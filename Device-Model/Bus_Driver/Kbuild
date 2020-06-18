@@ -1,0 +1,5 @@
+EXTRA_CFLAGS=-Wall
+
+obj-m := bus.o my_dev.o my_drv.o
+
+bus-y := my_bus.o dev_drv.o
