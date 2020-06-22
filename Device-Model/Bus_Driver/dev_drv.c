@@ -45,17 +45,3 @@ void my_driver_unregister(struct my_driver *mdrv)
 }
 EXPORT_SYMBOL_GPL(my_driver_unregister);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
