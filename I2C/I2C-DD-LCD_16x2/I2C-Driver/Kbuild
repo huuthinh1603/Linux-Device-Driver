@@ -1,0 +1,5 @@
+EXTRA_CFLAGS = -Wall
+
+obj-m := lcd.o
+
+lcd-y =  lcd_16x2_driver.o lcd_16x2.o

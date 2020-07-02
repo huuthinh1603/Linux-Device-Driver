@@ -1,0 +1,17 @@
+diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
+index a89d5e2cf01b..015ebea0d12e 100644
+--- a/arch/arm/boot/dts/am33xx.dtsi
++++ b/arch/arm/boot/dts/am33xx.dtsi
+@@ -553,6 +553,12 @@
+ 			reg = <0x4819c000 0x1000>;
+ 			interrupts = <30>;
+ 			status = "disabled";
++
++			lcd: lcd_16x2@27 {
++				compatible = "lcd_16x2";
++				reg = <0x27>;
++				status = "okay";
++			};
+ 		};
+ 
+ 		mmc1: mmc@48060000 {

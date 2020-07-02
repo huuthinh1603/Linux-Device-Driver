@@ -33,13 +33,9 @@ void *ping_wdt(void *args)
 				pthread_mutex_unlock(&mutex);
                                 pthread_exit(NULL);
                         }
-
 		}
 		pthread_mutex_unlock(&mutex);
-		
 		sleep(1);
-
-
 	}
 
 	pthread_exit(NULL);
@@ -55,13 +51,13 @@ int main()
 	fd = open(FILE, O_RDWR);
 	if(fd < 0) {
 		printf("Counld not open file\n");
-		return -1;
+		exit(1);
 	}
 
 	ret = pthread_create(&tid, NULL, ping_wdt, NULL);
 	if(ret) {
-		printf("The thread registered faild\n");
-		return -1;
+		printf("The thread registered failed\n");
+		goto out;
 	}
 
 	while(1) {
@@ -81,7 +77,7 @@ int main()
 				timeout = time_wdt;
 				ret = ioctl(fd, WDIOC_SETTIMEOUT, &timeout);
 				if(ret) {
-					printf("Setting timeout wasn't success\n");
+					printf("Setting the timeout failed\n");
 					pthread_mutex_unlock(&mutex);
 					break;
 				}
@@ -92,7 +88,7 @@ int main()
 			case 2:
 				ret = ioctl(fd, WDIOC_GETTIMEOUT, &time_wdt);
 				if(ret) {
-					printf("Getting timeout wasn't success\n");
+					printf("Getting the timeout failed\n");
 					break;
 				}
 				printf("Timeout is %d seconds\n", time_wdt);
@@ -100,7 +96,7 @@ int main()
 			case 3:
 				ret = ioctl(fd, WDIOC_GETTIMELEFT, &time_wdt);
                                 if(ret) {
-                                        printf("Getting timeleft wasn't success\n");
+                                        printf("Getting the timeleft failed\n");
                                 	break;
                                 }
                                 printf("The timeleft is %d seconds\n", time_wdt);
@@ -110,7 +106,7 @@ int main()
 				goto out;
 
 			default:
-				printf("The option is invalib\n");
+				printf("The option is invalid\n");
 				break;
 		}
 
@@ -121,5 +117,5 @@ out:
 		goto out;
 
 	close(fd);
-	return 0;
+	return ret;
 }
